@@ -1,9 +1,9 @@
 import random
+import numpy as np
 
 LINHAS = 1
 COLUNAS = 1
 MINAS = 1
-
 
 with open("cfg.txt", 'r') as f:
     conteudo = f.readlines()
@@ -17,12 +17,11 @@ with open("cfg.txt", 'r') as f:
                 COLUNAS = int(conteudo[i][1])
             case 'MINAS':
                 MINAS = int(conteudo[i][1])
-
         i += 1
 
 
 def criar_matriz(linhas, colunas, valor='.'):
-    return [[valor for _ in range(colunas)] for _ in range(linhas)]
+    return np.full((linhas, colunas), valor, dtype=str)
 
 
 def gerar_minas(tabuleiro, qtd_minas):
@@ -32,20 +31,20 @@ def gerar_minas(tabuleiro, qtd_minas):
         j = random.randint(0, COLUNAS - 1)
         posicoes.add((i, j))
     for (i, j) in posicoes:
-        tabuleiro[i][j] = '*'
+        tabuleiro[i, j] = '*'
     return posicoes
 
 
 def contar_minas(tabuleiro, x, y):
-    if tabuleiro[x][y] == '*':
+    if tabuleiro[x, y] == '*':
         return '*'
     cont = 0
     for i in range(x-1, x+2):
         for j in range(y-1, y+2):
             if 0 <= i < LINHAS and 0 <= j < COLUNAS:
-                if tabuleiro[i][j] == '*':
+                if tabuleiro[i, j] == '*':
                     cont += 1
-    return cont if cont > 0 else '#'
+    return str(cont) if cont > 0 else '#'
 
 
 def preparar_tabuleiro(minas):
@@ -53,8 +52,8 @@ def preparar_tabuleiro(minas):
     gerar_minas(tabuleiro, minas)
     for i in range(LINHAS):
         for j in range(COLUNAS):
-            if tabuleiro[i][j] != '*':
-                tabuleiro[i][j] = contar_minas(tabuleiro, i, j)
+            if tabuleiro[i, j] != '*':
+                tabuleiro[i, j] = contar_minas(tabuleiro, i, j)
     return tabuleiro
 
 
@@ -62,25 +61,25 @@ def mostrar_tabuleiro(mat):
     print("   " + " ".join(str(i) for i in range(COLUNAS)))
     for i in range(LINHAS):
         linha = mat[i]
-        print(f"{i:2} " + " ".join(str(c) for c in linha))
+        print(f"{i:2} " + " ".join(linha))
 
 
 def revelar(tabuleiro, visivel, x, y):
-    if visivel[x][y] != '.':
+    if visivel[x, y] != '.':
         return
-    visivel[x][y] = tabuleiro[x][y]
-    if tabuleiro[x][y] == '#':
+    visivel[x, y] = tabuleiro[x, y]
+    if tabuleiro[x, y] == '#':
         for i in range(x-1, x+2):
             for j in range(y-1, y+2):
                 if 0 <= i < LINHAS and 0 <= j < COLUNAS:
-                    if visivel[i][j] == '.':
+                    if visivel[i, j] == '.':
                         revelar(tabuleiro, visivel, i, j)
 
 
 def venceu(tabuleiro, visivel):
     for i in range(LINHAS):
         for j in range(COLUNAS):
-            if tabuleiro[i][j] != '*' and visivel[i][j] == '.':
+            if tabuleiro[i, j] != '*' and visivel[i, j] == '.':
                 return False
     return True
 
@@ -101,9 +100,8 @@ def jogar():
             print("Coordenadas fora do tabuleiro!")
             continue
 
-        if tabuleiro[x][y] == '*':
+        if tabuleiro[x, y] == '*':
             print("BOOM! Você perdeu!")
-
             break
         revelar(tabuleiro, visivel, x, y)
         if venceu(tabuleiro, visivel):
