@@ -1,16 +1,19 @@
-Para o trabalho da M1 iremos recriar o clássico jogo de campo minado, famoso jogo que vinha com a instalação do Windows:
+# Campo Minado em Python
 
+Este é um trabalho de Introdução à programação em Python, onde o objetivo é construir um Campo Minado, utilizando a biblioteca **numpy** e leitura de arquivos txt.
 
+---
 
-A área de jogo consiste num campo retangular composto de quadrados Cada quadrado pode ser revelado quando selecionado, e se o quadrado selecionar tiver uma mina, o jogo acaba. Se, por outro lado, o quadrado não contiver uma mina, uma de duas coisas poderá acontecer:
+## Sobre o Jogo
 
-Um número aparece, indicando a quantidade de quadrados adjacentes que contêm minas;
-Nenhum número aparece. Neste caso, o jogo revela automaticamente os quadrados que se encontram adjacentes ao quadrado vazio, já que não podem conter minas;
+O jogo consiste em um **campo retangular** composto por quadrados. Cada quadrado pode ser:
 
-O jogo é ganho quando todos os quadrados que não têm minas são revelados.
+- Revelado ao ser selecionado.
+- Se o quadrado tiver uma **mina**, o jogo termina imediatamente.
+- Se o quadrado não tiver mina:
+  - Um **número** aparece indicando quantos quadrados adjacentes contêm minas.
+  - Nenhum número aparece (`#`), revelando automaticamente os quadrados adjacentes que também não contêm minas.
 
+O jogo é **vencido** quando todos os quadrados sem minas forem revelados.
 
-
-	 
-	O objetivo deste trabalho é fazer uma versão desse jogo no Python utilizando o console como saída. O mapa do jogo pode ter qualquer tamanho de N x M.
-	A cada rodada, o mapa do jogo deve ser desenhado,
+---
