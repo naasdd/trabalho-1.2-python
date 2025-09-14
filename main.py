@@ -1,22 +1,40 @@
 import random
 
+LINHAS = 1
+COLUNAS = 1
+MINAS = 1
 
-LINHAS = 5
-COLUNAS = 6
-NUM_MINAS = 3
+
+with open("cfg.txt", 'r') as f:
+    conteudo = f.readlines()
+    i = 0
+    while (i < len(conteudo)):
+        conteudo[i] = conteudo[i].strip().split('=')
+        match conteudo[i][0]:
+            case 'LINHAS':
+                LINHAS = int(conteudo[i][1])
+            case 'COLUNAS':
+                COLUNAS = int(conteudo[i][1])
+            case 'MINAS':
+                MINAS = int(conteudo[i][1])
+
+        i += 1
+
 
 def criar_matriz(linhas, colunas, valor='.'):
     return [[valor for _ in range(colunas)] for _ in range(linhas)]
 
-def gerar_minas(tabuleiro, num_minas):
-    minas = set()
-    while len(minas) < num_minas:
+
+def gerar_minas(tabuleiro, qtd_minas):
+    posicoes = set()
+    while len(posicoes) < qtd_minas:
         i = random.randint(0, LINHAS - 1)
         j = random.randint(0, COLUNAS - 1)
-        minas.add((i, j))
-    for (i, j) in minas:
+        posicoes.add((i, j))
+    for (i, j) in posicoes:
         tabuleiro[i][j] = '*'
-    return minas
+    return posicoes
+
 
 def contar_minas(tabuleiro, x, y):
     if tabuleiro[x][y] == '*':
@@ -27,11 +45,12 @@ def contar_minas(tabuleiro, x, y):
             if 0 <= i < LINHAS and 0 <= j < COLUNAS:
                 if tabuleiro[i][j] == '*':
                     cont += 1
-    return cont if cont > 0 else ' '
+    return cont if cont > 0 else '#'
 
-def preparar_tabuleiro(num_minas):
+
+def preparar_tabuleiro(minas):
     tabuleiro = criar_matriz(LINHAS, COLUNAS)
-    gerar_minas(tabuleiro, num_minas)
+    gerar_minas(tabuleiro, minas)
     for i in range(LINHAS):
         for j in range(COLUNAS):
             if tabuleiro[i][j] != '*':
@@ -45,16 +64,18 @@ def mostrar_tabuleiro(mat):
         linha = mat[i]
         print(f"{i:2} " + " ".join(str(c) for c in linha))
 
+
 def revelar(tabuleiro, visivel, x, y):
     if visivel[x][y] != '.':
         return
     visivel[x][y] = tabuleiro[x][y]
-    if tabuleiro[x][y] == ' ':
+    if tabuleiro[x][y] == '#':
         for i in range(x-1, x+2):
             for j in range(y-1, y+2):
                 if 0 <= i < LINHAS and 0 <= j < COLUNAS:
                     if visivel[i][j] == '.':
                         revelar(tabuleiro, visivel, i, j)
+
 
 def venceu(tabuleiro, visivel):
     for i in range(LINHAS):
@@ -63,8 +84,9 @@ def venceu(tabuleiro, visivel):
                 return False
     return True
 
+
 def jogar():
-    tabuleiro = preparar_tabuleiro(NUM_MINAS)
+    tabuleiro = preparar_tabuleiro(MINAS)
     visivel = criar_matriz(LINHAS, COLUNAS)
     while True:
         mostrar_tabuleiro(visivel)
@@ -88,6 +110,7 @@ def jogar():
             print("Parabéns! Você venceu!")
             mostrar_tabuleiro(tabuleiro)
             break
+
 
 if __name__ == "__main__":
     jogar()
