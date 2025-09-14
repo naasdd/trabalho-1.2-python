@@ -110,5 +110,4 @@ def jogar():
             break
 
 
-if __name__ == "__main__":
-    jogar()
+jogar()
